@@ -39,7 +39,7 @@ $(LOCAL_BINARY): $(SOURCES)
 
 .PHONY: test
 test:
-	. ./scripts/shared_env && govendor test -v -timeout 30s -short -cover +l
+	govendor test -v -timeout 30s -short -cover +l
 
 .PHONY: get-deps
 get-deps:
