@@ -44,7 +44,7 @@ gogenerate:
 
 .PHONY: get-deps
 get-deps:
-	go get github.com/tools/godep
+	go get github.com/kardianos/govendor
 	go get golang.org/x/tools/cmd/cover
 	go get github.com/golang/mock/mockgen
 	go get golang.org/x/tools/cmd/goimports
