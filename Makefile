@@ -14,6 +14,7 @@
 VERSION := $(shell git describe --tags --candidates=1 --dirty 2>/dev/null || echo "dev")
 FLAGS := -s -w -X main.Version=$(VERSION)
 ROOT := $(shell pwd)
+PKG := ./cli/docker-credential-ecr-login
 
 all: build
 
@@ -33,8 +34,8 @@ docker: Dockerfile
 build: $(LOCAL_BINARY)
 
 $(LOCAL_BINARY): $(SOURCES)
-	go install -a -ldflags="$(FLAGS)" ./cli/docker-credential-ecr-login
-	go build -v -ldflags="$(FLAGS)" -o $(LOCAL_BINARY) ./cli/docker-credential-ecr-login
+	go install -a -ldflags="$(FLAGS)" $(PKG)
+	go build -v -ldflags="$(FLAGS)" -o $(LOCAL_BINARY) $(PKG)
 
 .PHONY: test
 test:
@@ -47,3 +48,8 @@ get-deps:
 .PHONY: clean
 clean:
 	rm -rf ./bin ||:
+
+.PHONY: release
+release:
+	go get github.com/mitchellh/gox
+	gox -ldflags="$(FLAGS)" -output="bin/local/{{.Dir}}_{{.OS}}_{{.Arch}}" -osarch="linux/amd64 darwin/amd64 windows/amd64" $(PKG)  
