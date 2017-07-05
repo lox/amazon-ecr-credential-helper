@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+VERSION := $(shell git describe --tags --candidates=1 --dirty 2>/dev/null || echo "dev")
+FLAGS := -s -w -X main.Version=$(VERSION)
 ROOT := $(shell pwd)
 
 all: build
 
 SOURCEDIR=./ecr-login
-SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
+SOURCES := $(shell find . -name '*.go')
 LOCAL_BINARY=bin/local/docker-credential-ecr-login
 
 .PHONY: docker
@@ -31,8 +33,8 @@ docker: Dockerfile
 build: $(LOCAL_BINARY)
 
 $(LOCAL_BINARY): $(SOURCES)
-	. ./scripts/shared_env && ./scripts/build_binary.sh ./bin/local
-	@echo "Built ecr-login"
+	go install -a -ldflags="$(FLAGS)" ./cli/docker-credential-ecr-login
+	go build -v -ldflags="$(FLAGS)" -o $(LOCAL_BINARY) ./cli/docker-credential-ecr-login
 
 .PHONY: test
 test:
